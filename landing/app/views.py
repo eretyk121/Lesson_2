@@ -15,7 +15,7 @@ def index(request):
     if page_from == 'test':
         msg = render_to_response('landing_alternate.html')
         counter_click['test'] += 1
-    else:
+    elif page_from == 'original':
         msg = render_to_response('landing.html')
         counter_click['original'] += 1
     # Реализуйте логику подсчета количества переходов с лендига по GET параметру from-landing
@@ -38,8 +38,14 @@ def landing(request):
     return msg
 
 def stats(request):
-    from_original = counter_click['original'] / counter_show['main']
-    from_test = counter_click['test'] / counter_show['test']
+    try:
+        from_original = counter_click['original'] / counter_show['main']
+    except ZeroDivisionError:
+        from_original = 'Переходы со страницы original отсутствуют'
+    try:
+        from_test = counter_click['test'] / counter_show['test']
+    except ZeroDivisionError:
+        from_test = 'Переходы со страницы test отсутствуют'
     # Реализуйте логику подсчета отношения количества переходов к количеству показов страницы
     # Чтобы отличить с какой версии лендинга был переход
     # проверяйте GET параметр marker который может принимать значения test и original
